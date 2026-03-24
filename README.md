@@ -79,6 +79,28 @@ A shared task manifest (`~/.openclaw/agents/shared/task_<taskId>.json`) tracks p
 - `docs/integration.md` – Step-by-step integration guide
 - `docs/phases.md` – Detailed phase descriptions and quality gates
 
+## 💰 Cost Optimization: Per-Phase LLMs
+
+You can assign different LLMs to each phase via `phaseModels` in the task manifest to balance quality and cost. Example:
+
+```json
+{
+  "phaseModels": {
+    "planning": "minimaxai/minimax-m2.5",
+    "coding": "openai/gpt-4o-mini",
+    "testing": "openai/gpt-4o-mini",
+    "reviewing": "anthropic/claude-3-opus"
+  }
+}
+```
+
+Recommended mapping:
+
+- **Planning, Review**: GPT-4 Turbo / Claude 3 Opus (high reasoning)
+- **Implementation, Testing, Deployment, Documentation**: GPT-4o-mini / Claude 3 Haiku (cost-effective)
+
+The orchestrator will automatically use these models via `sessions_spawn(model=...)`.
+
 ## 🔧 Customization
 
 - Templates are in `templates/`; edit to match your standards.

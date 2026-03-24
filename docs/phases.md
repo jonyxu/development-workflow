@@ -251,4 +251,20 @@ If any gate fails, the orchestrator should:
 2. Add a `notes` field explaining the failure.
 3. Notify the user and/or re-queue the responsible subskill with feedback.
 
-Example: If tests fail, send back to tester? Actually to coder: "tests failing, here is error log".
+Example: If tests fail, send back to coder: "tests failing, here is error log".
+
+## Model Selection Strategy (Optional)
+
+You can assign different LLMs to different phases via the `phaseModels` field in the task manifest. This allows cost optimization without sacrificing quality where it matters most.
+
+| Phase | Recommended Model | Rationale |
+|-------|------------------|-----------|
+| Planning | GPT-4 Turbo / Claude 3 Opus | Requires deep reasoning and structured output |
+| Design | GPT-4 Turbo / Claude 3 Opus | Complex architecture decisions |
+| Implementation | GPT-4o-mini / Claude 3.5 Sonnet | High output volume; cost-sensitive |
+| Testing | GPT-4o-mini / Claude 3 Haiku | Test code is repetitive and straightforward |
+| Review | GPT-4 Turbo / Claude 3 Opus | Security and quality analysis benefit from top-tier reasoning |
+| Deployment | GPT-4o-mini / Claude 3 Haiku | Scripts generation; low complexity |
+| Documentation | GPT-4o-mini / Claude 3 Haiku | Document drafting; high volume |
+
+Set these in your task manifest before starting the workflow. The orchestrator will pass the model to each `sessions_spawn` call, overriding the agent's default.

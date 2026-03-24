@@ -102,6 +102,14 @@
     },
     "notes": {
       "type": "string"
+    },
+    "phaseModels": {
+      "type": "object",
+      "description": "Per-phase model overrides (keys: planning, designing, coding, testing, reviewing, deploying, documenting)",
+      "additionalProperties": {
+        "type": "string",
+        "description": "Model identifier (e.g., openai/gpt-4o-mini, minimaxai/minimax-m2.5)"
+      }
     }
   },
   "additionalProperties": false

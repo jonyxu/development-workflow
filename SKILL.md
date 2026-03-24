@@ -91,6 +91,25 @@ The owning agent of the next phase reads this manifest before starting work.
 - Do not commit secrets or large binaries; use `.gitignore`.
 - At minimum, one commit per subtask implementation.
 
+## Per-phase Model Configuration
+
+To optimize LLM costs, orchestrators SHOULD support per-phase model overrides via the `phaseModels` field in the task manifest. Example:
+
+```json
+{
+  "phaseModels": {
+    "planning": "minimaxai/minimax-m2.5",
+    "coding": "openai/gpt-4o-mini",
+    "testing": "openai/gpt-4o-mini",
+    "reviewing": "anthropic/claude-3-opus"
+  }
+}
+```
+
+When delegating to a subskill via `sessions_spawn`, the orchestrator should pass the corresponding model as the `model` parameter. If a phase is not listed, the agent's default model is used.
+
+This enables cheap models for routine work (coding, testing) and expensive models for high-reasoning tasks (planning, review).
+
 ---
 
 ## Artifact Templates

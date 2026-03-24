@@ -50,11 +50,19 @@ When your agent receives a development request, it should:
   "requestedBy": "<user-id>",
   "createdAt": "<ISO timestamp>",
   "updatedAt": "<ISO timestamp>",
-  "artifacts": {}
+  "artifacts": {},
+  "phaseModels": {
+    "planning": "minimaxai/minimax-m2.5",
+    "coding": "openai/gpt-4o-mini",
+    "testing": "openai/gpt-4o-mini",
+    "reviewing": "anthropic/claude-3-opus"
+  }
 }
 ```
 
 Save this as `~/.openclaw/agents/shared/task_<taskId>.json`.
+
+> **Tip**: `phaseModels` are optional. They let you assign different LLMs to each phase (e.g., cheap models for coding, expensive for design/review). Omit to use the orchestrator's default model.
 
 ### Step B: Delegate to Planner
 
@@ -99,9 +107,12 @@ Sample message to coder:
   "taskId": "20260324-001",
   "workspace": "/path/to/todo-app",
   "plan": "/path/to/plan_20260324-001.md",
-  "design": "/path/to/DESIGN.md"
+  "design": "/path/to/DESIGN.md",
+  "model": "openai/gpt-4o-mini"   // optional override for this phase
 }
 ```
+
+The `model` field (if provided) is passed to `sessions_spawn` to override the agent's default model for that sub-session.
 
 ### Step F: Final Notification
 
