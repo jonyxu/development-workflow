@@ -1,43 +1,113 @@
 # Development Workflow Skill
 
-A standardized, end-to-end development process for OpenClaw agents.
+A complete, ready-to-use development pipeline for OpenClaw. This skill bundles everything you need to turn a user request into a deployed application: orchestrator, planning, coding, testing, review, deployment, and documentation.
 
-## Overview
+## 📦 What's included
 
-This skill defines a complete pipeline from user request to deployed product, with clear phases, handoffs, and quality gates.
+This package contains:
 
-## Phases
+- **Orchestrator skill** (`development-workflow/`) – Defines phases, handoffs, quality gates, and provides templates.
+- **Subskills** (pre-installed):
+  - `planner` – Breaks down requests into actionable subtasks
+  - `coder` – Implements features, writes tests, generates docs
+  - `tester` – Runs integration tests and produces reports
+  - `reviewer` – Evaluates code quality and security
 
-1. **Planning** - Decompose request into subtasks
-2. **Design** - Architecture, schemas, API spec
-3. **Implementation** - Code the features
-4. **Testing** - Automated integration tests
-5. **Review** - Quality and security evaluation
-6. **Deployment** - Publish to production
-7. **Documentation** - User and deployment guides
+Also included:
+- JSON schemas for task and plan validation
+- Markdown templates for design, test reports, reviews, deployment guides, user guides
+- Integration docs and phase specifications
+- Install script to deploy subskills automatically
 
-Each phase produces versioned artifacts and updates a shared task manifest.
+## 🚀 Quick Start
 
-## Usage
+1. **Copy the whole `development-workflow` directory** into your agent's skills folder:
 
-1. Copy this skill to your agent's `skills/` directory.
-2. On detecting a development request, create a task manifest in `~/.openclaw/agents/shared/task_<id>.json`.
-3. Sequentially invoke the subskills: `planner`, `designer`, `coder`, `tester`, `reviewer`, `deployer`, `documenter`.
-4. After each phase, verify the manifest and artifacts before proceeding.
-5. Notify the user on completion with the final access URL.
+   ```bash
+   cp -r development-workflow ~/.openclaw/agents/<your-agent>/skills/
+   ```
 
-## Requirements
+2. **Run the installer** to make subskills available:
 
-- Subskills: `planner`, `coder`, `tester`, `reviewer` (and optionally `designer`, `deployer`, `documenter`).
-- Shared directory for task manifest: `~/.openclaw/agents/shared/`.
-- Git must be available in the coder's workspace.
+   ```bash
+   cd ~/.openclaw/agents/<your-agent>/skills/development-workflow
+   ./install.sh
+   ```
 
-## Customization
+3. **Restart your agent** (if running) or rely on autoload.
 
-- Modify templates in `templates/`.
-- Adjust quality thresholds in `SKILL.md`.
-- Extend phases or add new ones as needed.
+4. **Verify skills loaded**:
 
-## License
+   ```bash
+   openclaw agents skills --agent <your-agent>
+   ```
 
-Open source, for OpenClaw ecosystem.
+   You should see `development-workflow`, `planner`, `coder`, `tester`, `reviewer`.
+
+5. **Use it**: Your agent can now handle development requests. By default, you can set up a trigger such that messages containing "开发" or "build" are routed to the `development-workflow` skill, or you can modify your agent's `AGENTS.md` to use this pipeline directly.
+
+## 📖 How It Works
+
+The workflow follows a strict phased approach:
+
+```
+User Request
+    ↓
+[Planning] → plan_<taskId>.md
+    ↓
+[Design]   → DESIGN.md (optional)
+    ↓
+[Implementation] → src/ + git commits
+    ↓
+[Testing] → test_report.txt
+    ↓
+[Review]  → review_notes.md (score ≥ 8.0)
+    ↓
+[Deployment] → DEPLOYMENT.md + public URL
+    ↓
+[Documentation] → README + USER_GUIDE
+    ↓
+✅ Done
+```
+
+A shared task manifest (`~/.openclaw/agents/shared/task_<taskId>.json`) tracks progress and artifacts across phases.
+
+## 📚 Documentation
+
+- `SKILL.md` – Full skill specification
+- `docs/overview.md` – Pipeline overview
+- `docs/integration.md` – Step-by-step integration guide
+- `docs/phases.md` – Detailed phase descriptions and quality gates
+
+## 🔧 Customization
+
+- Templates are in `templates/`; edit to match your standards.
+- Quality thresholds (e.g., minimum review score) can be adjusted in the orchestrator's logic or in the subskills themselves.
+- You can skip phases (e.g., design) if appropriate; just note it in the manifest.
+
+## 💡 Example
+
+After installation, try a simple request:
+
+> "Create a Hello World server that returns OK on /health"
+
+The agent will automatically:
+
+- Generate a plan with subtasks
+- Implement a Node.js server
+- Write automated tests
+- Review the code
+- Optionally deploy via Cloudflare Tunnel
+- Deliver docs and a public URL
+
+## 🛠 Requirements
+
+- Node.js 18+ (for coder)
+- Git (for source control)
+- Cloudflared (for tunnel deployment; optional)
+- Your agent must have permission to write to `~/.openclaw/agents/shared/` and to spawn subagents if using that pattern.
+
+## 📝 License
+
+Open source, part of the OpenClaw ecosystem.
+

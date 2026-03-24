@@ -116,17 +116,55 @@ Templates for each phase are provided in `templates/`:
 
 ---
 
+## Installation & Packaging
+
+This skill is packaged as a **complete development suite** that includes the orchestrator and all required subskills (planner, coder, tester, reviewer). To set up:
+
+### Quick Install
+
+```bash
+# Copy the entire development-workflow directory into your agent's skills folder
+cp -r development-workflow ~/.openclaw/agents/<your-agent>/skills/
+
+# Run the installer to deploy subskills
+cd ~/.openclaw/agents/<your-agent>/skills/development-workflow
+./install.sh
+```
+
+The `install.sh` script will copy the bundled subskills (`planner`, `coder`, `tester`, `reviewer`) to the parent `skills/` directory, making them available alongside the orchestrator.
+
+### Manual Install
+
+If you prefer, you can manually copy each subskill directory:
+
+```bash
+cp development-workflow/subskills/planner ~/.openclaw/agents/<your-agent>/skills/
+cp development-workflow/subskills/coder ~/.openclaw/agents/<your-agent>/skills/
+cp development-workflow/subskills/tester ~/.openclaw/agents/<your-agent>/skills/
+cp development-workflow/subskills/reviewer ~/.openclaw/agents/<your-agent>/skills/
+cp -r development-workflow ~/.openclaw/agents/<your-agent>/skills/
+```
+
+### After Installation
+
+- Restart your agent (or rely on autoload if enabled).
+- Verify that the skills are loaded: `openclaw agents skills --agent <your-agent>` should list `development-workflow`, `planner`, `coder`, `tester`, `reviewer`.
+- Configure your agent's triggers: Typically, you will bind the `development-workflow` skill as the handler for development requests (e.g., messages containing "开发", "build", "create").
+- Alternatively, you can continue using your existing `delegate_task` skill and set its target agent to one that has these skills installed.
+
 ## Integration into Your Agent
 
 To use this workflow in your agent:
 
-1. Copy the entire `development-workflow` skill directory to `~/.openclaw/agents/<your-agent>/skills/`.
+1. Ensure the subskills are installed (see above).
 2. In your agent's logic, when a development request is detected:
    - Create a `task_<taskId>.json` manifest in `~/.openclaw/agents/shared/`.
    - Invoke `planner` subskill with the request.
-   - After plan approval, sequentially invoke `designer`, `coder`, `tester`, `reviewer`, `deployer`, `documenter`.
+   - After plan approval, sequentially invoke `designer` (optional), `coder`, `tester`, `reviewer`, `deployer` (optional), `documenter` (optional).
    - After each phase, read the manifest and verify artifacts exist before proceeding.
 3. Notify the user at each major milestone.
+
+Note: The orchestrator skill (`development-workflow`) itself does not implement the phases; it delegates to the subskills. Therefore, your agent must have those subskills available in its skills directory (which the installer provides).
 
 ---
 
