@@ -1,0 +1,108 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Development Task Manifest",
+  "description": "Shared manifest tracking a development task across phases",
+  "type": "object",
+  "required": ["taskId", "title", "status"],
+  "properties": {
+    "taskId": {
+      "type": "string",
+      "description": "Unique task identifier (e.g., 20260324-001)"
+    },
+    "title": {
+      "type": "string",
+      "description": "Short title of the task"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the request"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["low", "normal", "high", "critical"],
+      "default": "normal"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["planning", "designing", "coding", "testing", "reviewing", "deploying", "done", "blocked"],
+      "description": "Current phase of the workflow"
+    },
+    "progress": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Percentage of completion"
+    },
+    "requestedBy": {
+      "type": "string",
+      "description": "User ID who requested the task"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "plan": {"type": "string", "format": "file-path"},
+        "design": {"type": "string", "format": "file-path"},
+        "code": {"type": "string", "format": "file-path"},
+        "test_report": {"type": "string", "format": "file-path"},
+        "review": {"type": "string", "format": "file-path"},
+        "deployment": {"type": "string", "format": "file-path"},
+        "user_guide": {"type": "string", "format": "file-path"},
+        "public_url": {"type": "string", "format": "uri"}
+      },
+      "additionalProperties": false
+    },
+    "subtasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "status"],
+        "properties": {
+          "id": {"type": "integer"},
+          "title": {"type": "string"},
+          "description": {"type": "string"},
+          "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "blocked"]},
+          "completedAt": {"type": "string", "format": "date-time"},
+          "assignee": {"type": "string"},
+          "notes": {"type": "string"}
+        }
+      }
+    },
+    "testing": {
+      "type": "object",
+      "properties": {
+        "status": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "passed": {"type": "integer"},
+        "failed": {"type": "integer"},
+        "report": {"type": "string", "format": "file-path"},
+        "completedAt": {"type": "string", "format": "date-time"}
+      }
+    },
+    "review": {
+      "type": "object",
+      "properties": {
+        "score": {"type": "number", "minimum": 0, "maximum": 10},
+        "status": {"type": "string", "enum": ["pending", "approved", "rejected"]},
+        "report": {"type": "string", "format": "file-path"},
+        "reviewer": {"type": "string"},
+        "completedAt": {"type": "string", "format": "date-time"},
+        "notes": {"type": "string"}
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

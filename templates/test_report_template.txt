@@ -1,0 +1,32 @@
+# Test Report: {{TASK_ID}}
+
+## Summary
+- **Date**: {{DATE}}
+- **Runner**: {{RUNNER}}
+- **Result**: {{PASSED}}/{{TOTAL}} passed ({{STATUS}})
+
+## Test Cases
+
+| # | Name | Description | Expected | Actual | Status |
+|---|------|-------------|----------|--------|--------|
+| 1 | GET_LIST_EMPTY | GET /api/todos returns [] when empty | 200 + [] | 200 + [] | ✅ |
+| 2 | CREATE | POST /api/todos creates new todo | 201 + id | 201 + id | ✅ |
+| ... | ... | ... | ... | ... | ... |
+
+## Coverage
+- API endpoints: [list covered]
+- Scenarios: [normal, edge cases, error handling]
+- Success rate: {{SUCCESS_RATE}}%
+
+## Failures (if any)
+No failures. All tests passed.
+
+## Recommendations
+- Consider adding tests for [missing cases]
+- Add property-based testing for robustness
+- Include performance benchmarks
+
+## Full Log
+```
+[Raw test output if needed]
+```
